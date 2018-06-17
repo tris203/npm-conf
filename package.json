@@ -10,7 +10,7 @@
 		"url": "github.com/kevva"
 	},
 	"engines": {
-		"node": ">=4"
+		"node": ">=6"
 	},
 	"scripts": {
 		"prepublish": "node lib/make.js",
@@ -38,6 +38,7 @@
 		"babel-generator": "^6.24.1",
 		"babel-traverse": "^6.24.1",
 		"babylon": "^6.17.1",
+		"eslint-import-resolver-node": "^0.3.2",
 		"npm": "^5.0.4",
 		"xo": "*"
 	},

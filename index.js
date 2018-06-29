@@ -1,11 +1,11 @@
 'use strict';
 const path = require('path');
 const Conf = require('./lib/conf');
-const defaults = require('./lib/defaults');
+const _defaults = require('./lib/defaults');
 
 // https://github.com/npm/npm/blob/latest/lib/config/core.js#L101-L200
-module.exports = (opts, types) => {
-	const conf = new Conf(Object.assign({}, defaults.defaults), types);
+module.exports = (opts, types, defaults) => {
+	const conf = new Conf(Object.assign({}, defaults || _defaults.defaults), types);
 
 	conf.add(Object.assign({}, opts), 'cli');
 	conf.addEnv();
@@ -40,4 +40,4 @@ module.exports = (opts, types) => {
 	return conf;
 };
 
-module.exports.defaults = Object.assign({}, defaults.defaults);
+module.exports.defaults = Object.assign({}, _defaults.defaults);

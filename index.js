@@ -22,6 +22,10 @@ module.exports = (opts, types, defaults) => {
 
 	conf.addFile(conf.get('userconfig'), 'user');
 
+    if (conf.get('workspace-prefix')) {
+		const workspaceConf = path.resolve(conf.get('workspace-prefix'), '.npmrc');
+		conf.addFile(workspaceConf, 'workspace');
+	}
 	if (conf.get('prefix')) {
 		const etc = path.resolve(conf.get('prefix'), 'etc');
 		conf.root.globalconfig = path.resolve(etc, 'npmrc');

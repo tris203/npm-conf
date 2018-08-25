@@ -5,7 +5,7 @@ const _defaults = require('./lib/defaults');
 
 // https://github.com/npm/npm/blob/latest/lib/config/core.js#L101-L200
 module.exports = (opts, types, defaults) => {
-	const conf = new Conf(Object.assign({}, defaults || _defaults.defaults), types);
+	const conf = new Conf(Object.assign({}, _defaults.defaults, defaults), types);
 
 	conf.add(Object.assign({}, opts), 'cli');
 	conf.addEnv();
@@ -22,7 +22,7 @@ module.exports = (opts, types, defaults) => {
 
 	conf.addFile(conf.get('userconfig'), 'user');
 
-    if (conf.get('workspace-prefix')) {
+  if (conf.get('workspace-prefix')) {
 		const workspaceConf = path.resolve(conf.get('workspace-prefix'), '.npmrc');
 		conf.addFile(workspaceConf, 'workspace');
 	}

@@ -20,12 +20,15 @@ module.exports = (opts, types, defaults) => {
 		conf.add({}, 'project');
 	}
 
-	conf.addFile(conf.get('userconfig'), 'user');
-
-  if (conf.get('workspace-prefix')) {
+	// TODO: cover with tests that configs from workspace .npmrc have bigger priority
+	// than the ones in userconfig
+	if (conf.get('workspace-prefix') && conf.get('workspace-prefix') !== projectConf) {
 		const workspaceConf = path.resolve(conf.get('workspace-prefix'), '.npmrc');
 		conf.addFile(workspaceConf, 'workspace');
 	}
+
+	conf.addFile(conf.get('userconfig'), 'user');
+
 	if (conf.get('prefix')) {
 		const etc = path.resolve(conf.get('prefix'), 'etc');
 		conf.root.globalconfig = path.resolve(etc, 'npmrc');

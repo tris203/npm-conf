@@ -12,7 +12,14 @@ module.exports = (opts, types, defaults) => {
 	if (require.resolve.paths) {
 		const paths = require.resolve.paths('npm');
 		// Assume that last path in resolve paths is builtin modules directory
-		const npmPath = require.resolve('npm', {paths: paths.slice(-1)});
+		let npmPath;
+		try {
+			npmPath = require.resolve('npm', {paths: paths.slice(-1)});
+		} catch (error) {
+			// Error will be thrown if module cannot be found.
+			// We should ignore that error.
+		}
+
 		if (npmPath) {
 			/**
 			 *  According to https://github.com/npm/cli/blob/86f5bdb91f7a5971953a5171d32d6eeda6a2e972/lib/npm.js#L258

@@ -1,4 +1,4 @@
-# @zkochan/npm-conf [![Build Status](https://travis-ci.org/zkochan/npm-conf.svg?branch=master)](https://travis-ci.org/zkochan/npm-conf)
+# @zkochan/npm-conf [![Build Status](https://travis-ci.com/zkochan/npm-conf.svg?branch=master)](https://travis-ci.com/zkochan/npm-conf)
 
 > Get the npm config
 

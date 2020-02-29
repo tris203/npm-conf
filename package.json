@@ -5,9 +5,8 @@
 	"license": "MIT",
 	"repository": "zkochan/npm-conf",
 	"author": {
-		"name": "Kevin Martensson",
-		"email": "kevinmartensson@gmail.com",
-		"url": "github.com/kevva"
+		"name": "Zoltan Kochan",
+		"email": "z@kochan.io"
 	},
 	"engines": {
 		"node": ">=10"

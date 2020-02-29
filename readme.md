@@ -1,4 +1,4 @@
-# npm-conf [![Build Status](https://travis-ci.org/kevva/npm-conf.svg?branch=master)](https://travis-ci.org/kevva/npm-conf)
+# @zkochan/npm-conf [![Build Status](https://travis-ci.org/zkochan/npm-conf.svg?branch=master)](https://travis-ci.org/zkochan/npm-conf)
 
 > Get the npm config
 
@@ -6,14 +6,14 @@
 ## Install
 
 ```
-$ npm install npm-conf
+$ pnpm add @zkochan/npm-conf
 ```
 
 
 ## Usage
 
 ```js
-const npmConf = require('npm-conf');
+const npmConf = require('@zkochan/npm-conf');
 
 const conf = npmConf();
 
@@ -44,4 +44,4 @@ Returns the default `npm` config.
 
 ## License
 
-MIT © [Kevin Mårtensson](https://github.com/kevva)
+MIT

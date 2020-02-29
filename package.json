@@ -14,7 +14,7 @@
 	},
 	"scripts": {
 		"prepublish": "node lib/make.js",
-		"test": "xo && ava"
+		"test": "jest"
 	},
 	"files": [
 		"index.js",
@@ -33,19 +33,12 @@
 		"config-chain": "^1.1.11"
 	},
 	"devDependencies": {
-		"ava": "*",
 		"babel-generator": "^6.24.1",
 		"babel-traverse": "^6.24.1",
 		"babylon": "^6.17.1",
 		"eslint-import-resolver-node": "^0.3.2",
+		"jest": "^25.1.0",
 		"npm": "^5.0.4",
-		"pify": "^4.0.1",
-		"xo": "*"
-	},
-	"xo": {
-		"ignores": [
-			"lib/defaults.js",
-			"lib/types.js"
-		]
+		"pify": "^4.0.1"
 	}
 }

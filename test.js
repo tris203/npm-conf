@@ -1,20 +1,19 @@
-import npmCore from 'npm/lib/config/core';
-import npmDefaults from 'npm/lib/config/defaults';
-import pify from 'pify';
-import test from 'ava';
-import m from '.';
+const npmCore = require('npm/lib/config/core');
+const npmDefaults = require('npm/lib/config/defaults');
+const pify = require('pify');
+const m = require('.');
 
-test('mirror npm config', async t => {
+test('mirror npm config', async () => {
 	const conf = m();
 	const npmconf = await pify(npmCore.load)();
 
-	t.is(conf.globalPrefix, npmconf.globalPrefix);
-	t.is(conf.localPrefix, npmconf.localPrefix);
-	t.is(conf.get('prefix'), npmconf.get('prefix'));
-	t.is(conf.get('registry'), npmconf.get('registry'));
-	t.is(conf.get('tmp'), npmconf.get('tmp'));
+	expect(conf.globalPrefix).toBe(npmconf.globalPrefix);
+	expect(conf.localPrefix).toBe(npmconf.localPrefix);
+	expect(conf.get('prefix')).toBe(npmconf.get('prefix'));
+	expect(conf.get('registry')).toBe(npmconf.get('registry'));
+	expect(conf.get('tmp')).toBe(npmconf.get('tmp'));
 });
 
-test('mirror npm defaults', t => {
-	t.deepEqual(m.defaults, npmDefaults.defaults);
+test.skip('mirror npm defaults', () => {
+	expect(m.defaults).toBe(npmDefaults.defaults);
 });

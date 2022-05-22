@@ -19,5 +19,6 @@ test('mirror npm config', async () => {
 });
 
 test('mirror npm defaults', () => {
+	delete npmDefaults['node-version']
 	expect(m.defaults).toMatchObject(npmDefaults);
 });

@@ -1,4 +1,4 @@
-# @zkochan/npm-conf [![Build Status](https://travis-ci.com/zkochan/npm-conf.svg?branch=master)](https://travis-ci.com/zkochan/npm-conf)
+# @pnpm/npm-conf [![Build Status](https://travis-ci.com/pnpm/npm-conf.svg?branch=master)](https://travis-ci.com/pnpm/npm-conf)
 
 > Get the npm config
 
@@ -6,14 +6,14 @@
 ## Install
 
 ```
-$ pnpm add @zkochan/npm-conf
+$ pnpm add @pnpm/npm-conf
 ```
 
 
 ## Usage
 
 ```js
-const npmConf = require('@zkochan/npm-conf');
+const npmConf = require('@pnpm/npm-conf');
 
 const conf = npmConf();
 

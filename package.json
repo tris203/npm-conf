@@ -1,15 +1,11 @@
 {
-	"name": "@zkochan/npm-conf",
-	"version": "2.0.2",
+	"name": "@pnpm/npm-conf",
+	"version": "1.0.0",
 	"description": "Get the npm config",
 	"license": "MIT",
-	"repository": "zkochan/npm-conf",
-	"author": {
-		"name": "Zoltan Kochan",
-		"email": "z@kochan.io"
-	},
+	"repository": "pnpm/npm-conf",
 	"engines": {
-		"node": ">=10"
+		"node": ">=14"
 	},
 	"scripts": {
 		"prepublish": "node lib/make.js && tsc -p lib/tsconfig.make-out.json",

@@ -8,7 +8,7 @@
 		"node": ">=14"
 	},
 	"scripts": {
-		"prepublish": "node lib/make.js && tsc -p lib/tsconfig.make-out.json",
+		"prepublishOnly": "node lib/make.js && tsc -p lib/tsconfig.make-out.json",
 		"test": "jest"
 	},
 	"files": [

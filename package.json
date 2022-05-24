@@ -1,11 +1,11 @@
 {
 	"name": "@pnpm/npm-conf",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"description": "Get the npm config",
 	"license": "MIT",
 	"repository": "pnpm/npm-conf",
 	"engines": {
-		"node": ">=14"
+		"node": ">=12"
 	},
 	"scripts": {
 		"prepublishOnly": "node lib/make.js && tsc -p lib/tsconfig.make-out.json",

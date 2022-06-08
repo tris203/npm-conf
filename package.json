@@ -25,6 +25,7 @@
 		"rc"
 	],
 	"dependencies": {
+		"@pnpm/network.ca-file": "^1.0.1",
 		"config-chain": "^1.1.11"
 	},
 	"devDependencies": {

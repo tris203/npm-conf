@@ -8,6 +8,7 @@ module.exports = (opts, types, defaults) => {
 	const conf = new Conf(Object.assign({}, _defaults.defaults, defaults), types);
 
 	conf.add(Object.assign({}, opts), 'cli');
+	const warnings = [];
 
 	if (require.resolve.paths) {
 		const paths = require.resolve.paths('npm');
@@ -25,7 +26,7 @@ module.exports = (opts, types, defaults) => {
 			 *  According to https://github.com/npm/cli/blob/86f5bdb91f7a5971953a5171d32d6eeda6a2e972/lib/npm.js#L258
 			 *  and https://github.com/npm/cli/blob/86f5bdb91f7a5971953a5171d32d6eeda6a2e972/lib/config/core.js#L92
 			 */
-			conf.addFile(path.resolve(path.dirname(npmPath), '..', 'npmrc'), 'builtin');
+			warnings.push(conf.addFile(path.resolve(path.dirname(npmPath), '..', 'npmrc'), 'builtin'));
 		}
 	}
 
@@ -36,7 +37,7 @@ module.exports = (opts, types, defaults) => {
 	const userConf = conf.get('userconfig');
 
 	if (!conf.get('global') && projectConf !== userConf) {
-		conf.addFile(projectConf, 'project');
+		warnings.push(conf.addFile(projectConf, 'project'));
 	} else {
 		conf.add({}, 'project');
 	}
@@ -45,10 +46,10 @@ module.exports = (opts, types, defaults) => {
 	// than the ones in userconfig
 	if (conf.get('workspace-prefix') && conf.get('workspace-prefix') !== projectConf) {
 		const workspaceConf = path.resolve(conf.get('workspace-prefix'), '.npmrc');
-		conf.addFile(workspaceConf, 'workspace');
+		warnings.push(conf.addFile(workspaceConf, 'workspace'));
 	}
 
-	conf.addFile(conf.get('userconfig'), 'user');
+	warnings.push(conf.addFile(conf.get('userconfig'), 'user'));
 
 	if (conf.get('prefix')) {
 		const etc = path.resolve(conf.get('prefix'), 'etc');
@@ -56,7 +57,7 @@ module.exports = (opts, types, defaults) => {
 		conf.root.globalignorefile = path.resolve(etc, 'npmignore');
 	}
 
-	conf.addFile(conf.get('globalconfig'), 'global');
+	warnings.push(conf.addFile(conf.get('globalconfig'), 'global'));
 	conf.loadUser();
 
 	const caFile = conf.get('cafile');
@@ -65,7 +66,10 @@ module.exports = (opts, types, defaults) => {
 		conf.loadCAFile(caFile);
 	}
 
-	return conf;
+	return {
+		config: conf,
+		warnings: warnings.filter(Boolean),
+	};
 };
 
 Object.defineProperty(module.exports, 'defaults', {

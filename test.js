@@ -8,7 +8,7 @@ const m = require('.');
 delete npmDefaults.unicode;
 
 test('mirror npm config', async () => {
-	const conf = m();
+	const { config: conf } = m();
 	const npmConf = await promisify(npmCore.load)();
 
 	expect(conf.globalPrefix).toBe(npmConf.globalPrefix);

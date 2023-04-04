@@ -60,9 +60,6 @@ module.exports = (opts, types, defaults) => {
 	}
 
 	warnings.push(conf.addFile(conf.get('globalconfig'), 'global'));
-	if (conf.get('globalPnpmConfig')) {
-		warnings.push(conf.addFile(conf.get('globalPnpmConfig'), 'pnpm-global'));
-	}
 	conf.loadUser();
 
 	const caFile = conf.get('cafile');

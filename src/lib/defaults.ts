@@ -1,5 +1,6 @@
 import os from 'os';
 import path from 'path';
+import { types } from './types';
 
 const temp = os.tmpdir();
 const uidOrPid = process.getuid ? process.getuid() : process.pid;
@@ -27,7 +28,7 @@ const cacheExtra = process.platform === 'win32' ? 'npm-cache' : '.npm';
 const cacheRoot = process.platform === 'win32' && process.env.APPDATA || home;
 const cache = path.resolve(cacheRoot, cacheExtra);
 
-let defaults;
+let defaults: Record<string, any> ;
 let globalPrefix;
 
 Object.defineProperty(exports, 'defaults', {

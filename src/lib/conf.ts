@@ -3,7 +3,7 @@ import { readCAFileSync } from '@pnpm/network.ca-file';
 import fs from 'fs';
 import path from 'path';
 import { parseField, findPrefix } from './util';
-import { ConfigChain } from 'config-chain';
+import { ConfigChain, ConfigChainOptions } from 'config-chain';
 import { keyToSetting } from './envKeyToSetting';
 
 export type ErrorFormat = {
@@ -24,14 +24,14 @@ export class Conf extends ConfigChain {
 	get: any;
 	set: any;
 	// https://github.com/npm/cli/blob/latest/lib/config/core.js#L203-L217
-	constructor(base, types) {
+	constructor(base: ConfigChainOptions, types: any) {
 		super(base);
 		this.root = base;
 		this._parseField = parseField.bind(null, types || require('./types'));
 	}
 
 	// https://github.com/npm/cli/blob/latest/lib/config/core.js#L326-L338
-	add(data, marker) {
+	add(data: Record<string, any>, marker: string | { __source__: string; } | undefined) {
 		try {
 			for (const x of Object.keys(data)) {
 				data[x] = this._parseField(data[x], x);
@@ -39,13 +39,14 @@ export class Conf extends ConfigChain {
 		} catch (error) {
 			throw error;
 		}
-
+		
+		// @ts-expect-error
 		return super.add(data, marker);
 	}
 
 	// https://github.com/npm/cli/blob/latest/lib/config/core.js#L306-L319
-	addFile(file, name):any {
-		name = name || file;
+	addFile(file: number | fs.PathLike, name: string):any {
+		name = name || file.toString();
 
 		const marker = {__source__: name};
 
@@ -138,7 +139,7 @@ export class Conf extends ConfigChain {
 	}
 
 	// https://github.com/npm/cli/blob/latest/lib/config/load-cafile.js
-	loadCAFile(file) {
+	loadCAFile(file: string) {
 		if (!file) {
 			return;
 		}

@@ -8,7 +8,7 @@ export function keyToSetting (x: string) {
 	return `${normalize(firstPart)}:${normalize(secondPart)}`;
 }
 
-function normalize (s) {
+function normalize (s: string) {
 	s = s.toLowerCase();
 	if (s === '_authtoken') return '_authToken';
 	let r = s[0];

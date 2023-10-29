@@ -5,7 +5,6 @@
       "outDir": "./dist",
       "allowJs": true,
       "rootDir": "./src",
-      "noImplicitAny": false,
     },
     "include": ["./src/**/*", "__typings__/configchain.d.ts"],
     "composite": true,

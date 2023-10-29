@@ -6,7 +6,7 @@ import { type ErrorFormat } from './conf';
 type TypeList = Array<PlatformPath | BooleanConstructor | StringConstructor | NumberConstructor>;
 
 // https://github.com/npm/cli/blob/latest/lib/config/core.js#L359-L404
-export const parseField = (types, field, key) => {
+export const parseField = (types: { [x: string]: ConcatArray<never>; }, field: string | number, key: string | number) => {
 	if (typeof field !== 'string') {
 		return field;
 	}
@@ -51,7 +51,7 @@ export const parseField = (types, field, key) => {
 		}
 	}
 
-	field = envReplace(field, process.env);
+	field = envReplace(field.toString(), process.env);
 
 	if (isPath) {
 		const regex = process.platform === 'win32' ? /^~(\/|\\)/ : /^~\//;
@@ -63,7 +63,7 @@ export const parseField = (types, field, key) => {
 		field = path.resolve(field);
 	}
 
-	if (isNumber && !isNaN(field)) {
+	if (isNumber && !isNaN(Number(field))) {
 		field = Number(field);
 	}
 
@@ -71,7 +71,7 @@ export const parseField = (types, field, key) => {
 };
 
 // https://github.com/npm/cli/blob/latest/lib/config/find-prefix.js
-export const findPrefix = name => {
+export const findPrefix = (name: string) => {
 	name = path.resolve(name);
 
 	let walkedUp = false;
@@ -85,10 +85,10 @@ export const findPrefix = name => {
 		return name;
 	}
 
-	const find = (name, original) => {
+	const find = (name: fs.PathLike, original: string) : any => {
 		const regex = /^[a-zA-Z]:(\\|\/)?$/;
 
-		if (name === '/' || (process.platform === 'win32' && regex.test(name))) {
+		if (name === '/' || (process.platform === 'win32' && regex.test(name.toString()))) {
 			return original;
 		}
 
@@ -105,7 +105,7 @@ export const findPrefix = name => {
 				return name;
 			}
 
-			const dirname = path.dirname(name);
+			const dirname = path.dirname(name.toString());
 
 			if (dirname === name) {
 				return original;

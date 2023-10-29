@@ -16,6 +16,14 @@ test('mirror npm config', async () => {
 	expect(conf.get('prefix')).toBe(npmConf.get('prefix'));
 	expect(conf.get('registry')).toBe(npmConf.get('registry'));
 	expect(conf.get('tmp')).toBe(npmConf.get('tmp'));
+
+	// loop each config key and compare
+	const ignoreList = ['cafile', 'node-version', 'onload-script']
+	for (const key in npmDefaults) {
+		if (!ignoreList.includes(key)){
+		expect(conf.get(key)).toBe(npmConf.get(key));
+		}
+	}
 });
 
 test('mirror npm defaults', () => {

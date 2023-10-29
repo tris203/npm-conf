@@ -1,8 +1,8 @@
 // load `npmDefaults` first and clone them into a new object as `npmCore` mutates them
-const npmDefaults = Object.assign({}, require('./node_modules/npm/lib/config/defaults').defaults);
+const npmDefaults = Object.assign({}, require('../node_modules/npm/lib/config/defaults').defaults);
 const npmCore = require('npm/lib/config/core');
 const { promisify } = require('util');
-const m = require('.');
+const m = require('../dist');
 
 // The 'unicode' property is determined based on OS type and environment variables
 delete npmDefaults.unicode;

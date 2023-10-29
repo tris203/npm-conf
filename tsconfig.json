@@ -1,0 +1,12 @@
+{
+    "extends": "@pnpm/tsconfig",
+    "compilerOptions": {
+      "ignoreDeprecations": "5.0",
+      "outDir": "./dist",
+      "allowJs": true,
+      "rootDir": "./src",
+      "noImplicitAny": false,
+    },
+    "include": ["./src/**/*", "__typings__/configchain.d.ts"],
+    "composite": true,
+  }

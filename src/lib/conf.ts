@@ -1,17 +1,33 @@
 'use strict';
-const { readCAFileSync } = require('@pnpm/network.ca-file');
-const fs = require('fs');
-const path = require('path');
-const {ConfigChain} = require('config-chain');
-const envKeyToSetting = require('./envKeyToSetting');
-const util = require('./util');
+import { readCAFileSync } from '@pnpm/network.ca-file';
+import fs from 'fs';
+import path from 'path';
+import { parseField, findPrefix } from './util';
+import { ConfigChain } from 'config-chain';
+import { keyToSetting } from './envKeyToSetting';
 
-class Conf extends ConfigChain {
+export type ErrorFormat = {
+	code: string;
+	message: string;
+};
+
+export class Conf extends ConfigChain {
+	_parseField: (field: any, key: any) => any;
+	root: any;
+	sources: any;
+	push: any;
+	_await: any;
+	addString: any;
+	list: any;
+	globalPrefix: any;
+	localPrefix: any;
+	get: any;
+	set: any;
 	// https://github.com/npm/cli/blob/latest/lib/config/core.js#L203-L217
 	constructor(base, types) {
 		super(base);
 		this.root = base;
-		this._parseField = util.parseField.bind(null, types || require('./types'));
+		this._parseField = parseField.bind(null, types || require('./types'));
 	}
 
 	// https://github.com/npm/cli/blob/latest/lib/config/core.js#L326-L338
@@ -28,7 +44,7 @@ class Conf extends ConfigChain {
 	}
 
 	// https://github.com/npm/cli/blob/latest/lib/config/core.js#L306-L319
-	addFile(file, name) {
+	addFile(file, name):any {
 		name = name || file;
 
 		const marker = {__source__: name};
@@ -41,16 +57,17 @@ class Conf extends ConfigChain {
 			const contents = fs.readFileSync(file, 'utf8');
 			this.addString(contents, file, 'ini', marker);
 		} catch (error) {
-			if (error.code === 'ENOENT') {
+			if ((error as ErrorFormat).code === 'ENOENT') {
 				this.add({}, marker);
 			} else {
-				return `Issue while reading "${file}". ${error.message}`
+				return `Issue while reading "${file}". ${(error as Error).message}`
 			}
 		}
+		return
 	}
 
 	// https://github.com/npm/cli/blob/latest/lib/config/core.js#L341-L357
-	addEnv(env) {
+	addEnv(env: string | NodeJS.ProcessEnv): any {
 		env = env || process.env;
 
 		const conf = {};
@@ -62,7 +79,7 @@ class Conf extends ConfigChain {
 					return;
 				}
 
-				conf[envKeyToSetting(x.substr(11))] = env[x];
+				conf[keyToSetting(x.substr(11))] = env[x];
 			});
 
 		return super.addEnv('', conf, 'env');
@@ -94,7 +111,7 @@ class Conf extends ConfigChain {
 			}
 		});
 
-		let p;
+		let p: string;
 
 		Object.defineProperty(this, 'localPrefix', {
 			enumerable: true,
@@ -110,7 +127,7 @@ class Conf extends ConfigChain {
 			p = path.resolve(cli.prefix);
 		} else {
 			try {
-				const prefix = util.findPrefix(process.cwd());
+				const prefix = findPrefix(process.cwd());
 				p = prefix;
 			} catch (error) {
 				throw error;
@@ -151,7 +168,7 @@ class Conf extends ConfigChain {
 			const stats = fs.statSync(prefix);
 			defConf.user = stats.uid;
 		} catch (error) {
-			if (error.code === 'ENOENT') {
+			if ((error as ErrorFormat).code === 'ENOENT') {
 				return;
 			}
 
@@ -159,5 +176,3 @@ class Conf extends ConfigChain {
 		}
 	}
 }
-
-module.exports = Conf;

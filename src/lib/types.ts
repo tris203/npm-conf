@@ -1,8 +1,6 @@
-// Generated with `lib/make.js`
-'use strict';
-const path = require('path');
-const Stream = require('stream').Stream;
-const url = require('url');
+import path from "path";
+import { Stream } from "stream";
+import url from "url";
 
 const Umask = () => {};
 const getLocalAddresses = () => [];

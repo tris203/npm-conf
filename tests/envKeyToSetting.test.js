@@ -1,4 +1,4 @@
-const envKeyToSetting = require('./envKeyToSetting');
+const envKeyToSetting = require('./../dist/lib/envKeyToSetting');
 
 const fixtures = [
 	[
@@ -41,6 +41,6 @@ const fixtures = [
 
 test('envKeyToSetting()', () => {
 	for (const [key, expected] of fixtures) {
-		expect(envKeyToSetting(key)).toBe(expected);
+		expect(envKeyToSetting.keyToSetting(key)).toBe(expected);
 	}
 })

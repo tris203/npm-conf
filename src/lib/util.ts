@@ -1,15 +1,19 @@
-'use strict';
-const fs = require('fs');
-const path = require('path');
-const { envReplace } = require('@pnpm/config.env-replace');
+import fs from 'fs';
+import path, { PlatformPath } from 'path';
+import { envReplace } from '@pnpm/config.env-replace';
+import { type ErrorFormat } from './conf';
+
+type TypeList = Array<PlatformPath | BooleanConstructor | StringConstructor | NumberConstructor>;
 
 // https://github.com/npm/cli/blob/latest/lib/config/core.js#L359-L404
-const parseField = (types, field, key) => {
+export const parseField = (types, field, key) => {
 	if (typeof field !== 'string') {
 		return field;
 	}
 
-	const typeList = [].concat(types[key]);
+
+
+	const typeList: TypeList = [].concat(types[key]);
 	const isPath = typeList.indexOf(path) !== -1;
 	const isBool = typeList.indexOf(Boolean) !== -1;
 	const isString = typeList.indexOf(String) !== -1;
@@ -67,7 +71,7 @@ const parseField = (types, field, key) => {
 };
 
 // https://github.com/npm/cli/blob/latest/lib/config/find-prefix.js
-const findPrefix = name => {
+export const findPrefix = name => {
 	name = path.resolve(name);
 
 	let walkedUp = false;
@@ -110,7 +114,7 @@ const findPrefix = name => {
 			return find(dirname, original);
 		} catch (error) {
 			if (name === original) {
-				if (error.code === 'ENOENT') {
+				if ((error as ErrorFormat).code === 'ENOENT') {
 					return original;
 				}
 
@@ -123,7 +127,3 @@ const findPrefix = name => {
 
 	return find(name, name);
 };
-
-exports.envReplace = envReplace;
-exports.findPrefix = findPrefix;
-exports.parseField = parseField;

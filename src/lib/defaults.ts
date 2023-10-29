@@ -1,7 +1,5 @@
-// Generated with `lib/make.js`
-'use strict';
-const os = require('os');
-const path = require('path');
+import os from 'os';
+import path from 'path';
 
 const temp = os.tmpdir();
 const uidOrPid = process.getuid ? process.getuid() : process.pid;
@@ -161,11 +159,11 @@ Object.defineProperty(exports, 'defaults', {
 			timing: false,
 			tmp: temp,
 			unicode: hasUnicode(),
-			'unsafe-perm': process.platform === 'win32' || process.platform === 'cygwin' || !(process.getuid && process.setuid && process.getgid && process.setgid) || process.getuid() !== 0,
+			'unsafe-perm': process.platform === 'win32' || process.platform === 'cygwin' || !(process.setgid) || process.getuid() !== 0,
 			usage: false,
 			user: process.platform === 'win32' ? 0 : 'nobody',
 			userconfig: path.resolve(home, '.npmrc'),
-			umask: process.umask ? process.umask() : umask.fromString('022'),
+			umask: process.umask ? process.umask() : umask.fromString(),
 			version: false,
 			versions: false,
 			viewer: process.platform === 'win32' ? 'browser' : 'man',

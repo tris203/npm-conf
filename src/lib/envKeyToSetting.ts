@@ -1,4 +1,4 @@
-module.exports = function (x) {
+export function keyToSetting (x: string) {
 	const colonIndex = x.indexOf(':');
 	if (colonIndex === -1) {
 		return normalize(x);

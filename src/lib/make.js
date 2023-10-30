@@ -1,10 +1,9 @@
 const fs = require('fs');
 const path = require('path');
-const babylon = require('babylon');
-const generate = require('babel-generator').default;
-const traverse = require('babel-traverse').default;
+const definitions = require('@npmcli/config/lib/definitions')
+const Config = require('@npmcli/config')
 
-const INDENT_REGEXP = /^((?:  )+)/gmu;
+const INDENT_REGEXP = /^((?:	)+)/gmu;
 /** @param {string} match */
 const INDENT_REPLACER = match => {
 	return '\t'.repeat(match.length >>> 1);
@@ -12,10 +11,9 @@ const INDENT_REPLACER = match => {
 
 /** @param {string} body */
 const defaultsTemplate = body => `\
-// Generated with \`lib/make.js\`
-'use strict';
-const os = require('os');
-const path = require('path');
+import os from 'os';
+import path from 'path';
+import { types } from './types';
 
 const temp = os.tmpdir();
 const uidOrPid = process.getuid ? process.getuid() : process.pid;
@@ -40,14 +38,34 @@ if (home) {
 }
 
 const cacheExtra = process.platform === 'win32' ? 'npm-cache' : '.npm';
-const cacheRoot = process.platform === 'win32' ? process.env.APPDATA : home;
+const cacheRoot = process.platform === 'win32' && process.env.APPDATA || home;
 const cache = path.resolve(cacheRoot, cacheExtra);
 
-let defaults;
+let defaults: Record<string, any> ;
 let globalPrefix;
 
-${body.replace(INDENT_REGEXP, INDENT_REPLACER).replace("'node-version': process.version,", '// We remove node-version to fix the issue described here: https://github.com/pnpm/pnpm/issues/4203#issuecomment-1133872769')};
-`;
+Object.defineProperty(exports, 'defaults', {
+	get: function () {
+		if (defaults) return defaults;
+
+		if (process.env.PREFIX) {
+			globalPrefix = process.env.PREFIX;
+		} else if (process.platform === 'win32') {
+			// c:\\node\\node.exe --> prefix=c:\\node\\
+			globalPrefix = path.dirname(process.execPath);
+		} else {
+			// /usr/local/bin/node --> prefix=/usr/local
+			globalPrefix = path.dirname(path.dirname(process.execPath)); // destdir only is respected on Unix
+
+			if (process.env.DESTDIR) {
+				globalPrefix = path.join(process.env.DESTDIR, globalPrefix);
+			}
+		}
+
+defaults = ${body.replaceAll('"', `'`).replace("'node-version': process.version,", '// We remove node-version to fix the issue described here: https://github.com/pnpm/pnpm/issues/4203#issuecomment-1133872769')};
+return defaults;
+}
+});`;
 
 /** @param {string} body */
 const typesTemplate = body => `\
@@ -64,35 +82,5 @@ const semver = () => {};
 ${body.replace(INDENT_REGEXP, INDENT_REPLACER)};
 `;
 
-const defaults = require.resolve('npm/lib/config/defaults');
-const ast = babylon.parse(fs.readFileSync(defaults, 'utf8'));
-
-const isDefaults = node =>
-	node.callee.type === 'MemberExpression' &&
-	node.callee.object.name === 'Object' &&
-	node.callee.property.name === 'defineProperty' &&
-	node.arguments.some(x => x.name === 'exports');
-
-const isTypes = node =>
-	node.type === 'MemberExpression' &&
-	node.object.name === 'exports' &&
-	node.property.name === 'types';
-
-let defs;
-let types;
-
-traverse(ast, {
-	CallExpression(path) {
-		if (isDefaults(path.node)) {
-			defs = path.node;
-		}
-	},
-	AssignmentExpression(path) {
-		if (path.node.left && isTypes(path.node.left)) {
-			types = path.node;
-		}
-	}
-});
-
-fs.writeFileSync(path.join(__dirname, 'defaults.js'), defaultsTemplate(generate(defs).code));
-fs.writeFileSync(path.join(__dirname, 'types.js'), typesTemplate(generate(types).code));
+fs.writeFileSync(path.join(__dirname, 'defaults.ts'), defaultsTemplate(JSON.stringify(definitions.defaults, null, 1)));
+// fs.writeFileSync(path.join(__dirname, 'types.js'), typesTemplate(JSON.stringify(definitionTypes, null, 1)));

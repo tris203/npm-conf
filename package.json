@@ -30,6 +30,7 @@
 		"config-chain": "^1.1.11"
 	},
 	"devDependencies": {
+		"@npmcli/config": "^8.0.1",
 		"@pnpm/tsconfig": "^2.0.0",
 		"@types/babylon": "^6.16.8",
 		"@types/node": "^14.0.14",

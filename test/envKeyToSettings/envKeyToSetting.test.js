@@ -1,4 +1,4 @@
-const envKeyToSetting = require('./../dist/lib/envKeyToSetting');
+const envKeyToSetting = require('./../../dist/lib/envKeyToSetting');
 
 const fixtures = [
 	[

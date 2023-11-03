@@ -8,7 +8,7 @@
 		"node": ">=12"
 	},
 	"scripts": {
-		"__prepublishOnly": "node src/lib/make.js",
+		"__prepublishOnly": "node src/lib/make.js && pnpm lint:ts --fix",
 		"build": "rimraf ./dist && tsc",
 		"test": "jest",
 		"lint:ts": "eslint \"src/**/*.ts\""

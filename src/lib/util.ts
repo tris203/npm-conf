@@ -83,7 +83,7 @@ export const findPrefix = (name: string) => {
     return name
   }
 
-  const find = (name: fs.PathLike, original: string): unknown => {
+  const find = (name: fs.PathLike, original: string): any => {
     const regex = /^[a-zA-Z]:(\\|\/)?$/
 
     if (name === '/' || (process.platform === 'win32' && regex.test(name.toString()))) {

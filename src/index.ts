@@ -5,7 +5,7 @@ import { defaults as _defaults } from './lib/defaults'
 
 // https://github.com/npm/cli/blob/latest/lib/config/core.js#L101-L200
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-module.exports = (opts: any, types: unknown, defaults: Record<string, unknown>) => {
+module.exports = (opts: any, types: any, defaults: Record<string, any>) => {
   const conf = new Conf(Object.assign({}, _defaults.defaults, defaults), types)
 
   conf.add(Object.assign({}, opts), 'cli')

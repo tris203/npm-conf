@@ -43,7 +43,7 @@ const unicode = /UTF-?8$/i.test(
   process.env.LANG || ''
 )
 
-let defaults: unknown
+export let defaults: any
 let globalPrefix
 
 Object.defineProperty(exports, 'defaults', {

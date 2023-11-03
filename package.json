@@ -28,6 +28,7 @@
 	"dependencies": {
 		"@pnpm/config.env-replace": "^1.1.0",
 		"@pnpm/network.ca-file": "^1.0.1",
+		"ci-info": "^4.0.0",
 		"config-chain": "^1.1.11"
 	},
 	"devDependencies": {

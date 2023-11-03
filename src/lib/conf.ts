@@ -1,179 +1,178 @@
-'use strict';
-import { readCAFileSync } from '@pnpm/network.ca-file';
-import fs from 'fs';
-import path from 'path';
-import { parseField, findPrefix } from './util';
-import { ConfigChain, ConfigChainOptions } from 'config-chain';
-import { keyToSetting } from './envKeyToSetting';
+'use strict'
+import { readCAFileSync } from '@pnpm/network.ca-file'
+import fs from 'fs'
+import path from 'path'
+import { parseField, findPrefix } from './util'
+import { ConfigChain, type ConfigChainOptions } from 'config-chain'
+import { keyToSetting } from './envKeyToSetting'
 
-export type ErrorFormat = {
-	code: string;
-	message: string;
-};
+export interface ErrorFormat {
+  code: string
+  message: string
+}
 
 export class Conf extends ConfigChain {
-	_parseField: (field: any, key: any) => any;
-	root: any;
-	sources: any;
-	push: any;
-	_await: any;
-	addString: any;
-	list: any;
-	globalPrefix: any;
-	localPrefix: any;
-	get: any;
-	set: any;
-	// https://github.com/npm/cli/blob/latest/lib/config/core.js#L203-L217
-	constructor(base: ConfigChainOptions, types: any) {
-		super(base);
-		this.root = base;
-		this._parseField = parseField.bind(null, types || require('./types'));
-	}
+  _parseField: (field: any, key: any) => any
+  root: any
+  sources: any
+  push: any
+  _await: any
+  addString: any
+  list: any
+  globalPrefix: any
+  localPrefix: any
+  get: any;
+  set: any;
+  // https://github.com/npm/cli/blob/latest/lib/config/core.js#L203-L217
+  constructor (base: ConfigChainOptions, types: any) {
+    super(base)
+    this.root = base
+    this._parseField = parseField.bind(null, types || require('./types'))
+  }
 
-	// https://github.com/npm/cli/blob/latest/lib/config/core.js#L326-L338
-	add(data: Record<string, any>, marker: string | { __source__: string; } | undefined) {
-		try {
-			for (const x of Object.keys(data)) {
-				data[x] = this._parseField(data[x], x);
-			}
-		} catch (error) {
-			throw error;
-		}
-		
-		// @ts-expect-error
-		return super.add(data, marker);
-	}
+  // https://github.com/npm/cli/blob/latest/lib/config/core.js#L326-L338
+  add (data: Record<string, any>, marker: string | { __source__: string } | undefined) {
+    try {
+      for (const x of Object.keys(data)) {
+        data[x] = this._parseField(data[x], x)
+      }
+    } catch (error) {
+      throw error
+    }
 
-	// https://github.com/npm/cli/blob/latest/lib/config/core.js#L306-L319
-	addFile(file: number | fs.PathLike, name: string):any {
-		name = name || file.toString();
+    // @ts-expect-error
+    return super.add(data, marker)
+  }
 
-		const marker = {__source__: name};
+  // https://github.com/npm/cli/blob/latest/lib/config/core.js#L306-L319
+  addFile (file: number | fs.PathLike, name: string): any {
+    name = name || file.toString()
 
-		this.sources[name] = {path: file, type: 'ini'};
-		this.push(marker);
-		this._await();
+    const marker = { __source__: name }
 
-		try {
-			const contents = fs.readFileSync(file, 'utf8');
-			this.addString(contents, file, 'ini', marker);
-		} catch (error) {
-			if ((error as ErrorFormat).code === 'ENOENT') {
-				this.add({}, marker);
-			} else {
-				return `Issue while reading "${file}". ${(error as Error).message}`
-			}
-		}
-		return
-	}
+    this.sources[name] = { path: file, type: 'ini' }
+    this.push(marker)
+    this._await()
 
-	// https://github.com/npm/cli/blob/latest/lib/config/core.js#L341-L357
-	addEnv(env: string | NodeJS.ProcessEnv): any {
-		env = env || process.env;
+    try {
+      const contents = fs.readFileSync(file, 'utf8')
+      this.addString(contents, file, 'ini', marker)
+    } catch (error) {
+      if ((error as ErrorFormat).code === 'ENOENT') {
+        this.add({}, marker)
+      } else {
+        return `Issue while reading "${file}". ${(error as Error).message}`
+      }
+    }
+  }
 
-		const conf = {};
+  // https://github.com/npm/cli/blob/latest/lib/config/core.js#L341-L357
+  addEnv (env: string | NodeJS.ProcessEnv): any {
+    env = env || process.env
 
-		Object.keys(env)
-			.filter(x => /^npm_config_/i.test(x))
-			.forEach(x => {
-				if (!env[x]) {
-					return;
-				}
+    const conf = {}
 
-				conf[keyToSetting(x.substr(11))] = env[x];
-			});
+    Object.keys(env)
+      .filter(x => /^npm_config_/i.test(x))
+      .forEach(x => {
+        if (!env[x]) {
+          return
+        }
 
-		return super.addEnv('', conf, 'env');
-	}
+        conf[keyToSetting(x.substr(11))] = env[x]
+      })
 
-	// https://github.com/npm/cli/blob/latest/lib/config/load-prefix.js
-	loadPrefix() {
-		const cli = this.list[0];
+    return super.addEnv('', conf, 'env')
+  }
 
-		Object.defineProperty(this, 'prefix', {
-			enumerable: true,
-			set: prefix => {
-				const g = this.get('global');
-				this[g ? 'globalPrefix' : 'localPrefix'] = prefix;
-			},
-			get: () => {
-				const g = this.get('global');
-				return g ? this.globalPrefix : this.localPrefix;
-			}
-		});
+  // https://github.com/npm/cli/blob/latest/lib/config/load-prefix.js
+  loadPrefix () {
+    const cli = this.list[0]
 
-		Object.defineProperty(this, 'globalPrefix', {
-			enumerable: true,
-			set: prefix => {
-				this.set('prefix', prefix);
-			},
-			get: () => {
-				return path.resolve(this.get('prefix'));
-			}
-		});
+    Object.defineProperty(this, 'prefix', {
+      enumerable: true,
+      set: prefix => {
+        const g = this.get('global')
+        this[g ? 'globalPrefix' : 'localPrefix'] = prefix
+      },
+      get: () => {
+        const g = this.get('global')
+        return g ? this.globalPrefix : this.localPrefix
+      },
+    })
 
-		let p: string;
+    Object.defineProperty(this, 'globalPrefix', {
+      enumerable: true,
+      set: prefix => {
+        this.set('prefix', prefix)
+      },
+      get: () => {
+        return path.resolve(this.get('prefix'))
+      },
+    })
 
-		Object.defineProperty(this, 'localPrefix', {
-			enumerable: true,
-			set: prefix => {
-				p = prefix;
-			},
-			get: () => {
-				return p;
-			}
-		});
+    let p: string
 
-		if (Object.prototype.hasOwnProperty.call(cli, 'prefix')) {
-			p = path.resolve(cli.prefix);
-		} else {
-			try {
-				const prefix = findPrefix(process.cwd());
-				p = prefix;
-			} catch (error) {
-				throw error;
-			}
-		}
+    Object.defineProperty(this, 'localPrefix', {
+      enumerable: true,
+      set: prefix => {
+        p = prefix
+      },
+      get: () => {
+        return p
+      },
+    })
 
-		return p;
-	}
+    if (Object.prototype.hasOwnProperty.call(cli, 'prefix')) {
+      p = path.resolve(cli.prefix)
+    } else {
+      try {
+        const prefix = findPrefix(process.cwd())
+        p = prefix
+      } catch (error) {
+        throw error
+      }
+    }
 
-	// https://github.com/npm/cli/blob/latest/lib/config/load-cafile.js
-	loadCAFile(file: string) {
-		if (!file) {
-			return;
-		}
+    return p
+  }
 
-		const ca = readCAFileSync(file);
-		if (ca) {
-			this.set('ca', ca);
-		}
-	}
+  // https://github.com/npm/cli/blob/latest/lib/config/load-cafile.js
+  loadCAFile (file: string) {
+    if (!file) {
+      return
+    }
 
-	// https://github.com/npm/cli/blob/latest/lib/config/set-user.js
-	loadUser() {
-		const defConf = this.root;
+    const ca = readCAFileSync(file)
+    if (ca) {
+      this.set('ca', ca)
+    }
+  }
 
-		if (this.get('global')) {
-			return;
-		}
+  // https://github.com/npm/cli/blob/latest/lib/config/set-user.js
+  loadUser () {
+    const defConf = this.root
 
-		if (process.env.SUDO_UID) {
-			defConf.user = Number(process.env.SUDO_UID);
-			return;
-		}
+    if (this.get('global')) {
+      return
+    }
 
-		const prefix = path.resolve(this.get('prefix'));
+    if (process.env.SUDO_UID) {
+      defConf.user = Number(process.env.SUDO_UID)
+      return
+    }
 
-		try {
-			const stats = fs.statSync(prefix);
-			defConf.user = stats.uid;
-		} catch (error) {
-			if ((error as ErrorFormat).code === 'ENOENT') {
-				return;
-			}
+    const prefix = path.resolve(this.get('prefix'))
 
-			throw error;
-		}
-	}
+    try {
+      const stats = fs.statSync(prefix)
+      defConf.user = stats.uid
+    } catch (error) {
+      if ((error as ErrorFormat).code === 'ENOENT') {
+        return
+      }
+
+      throw error
+    }
+  }
 }

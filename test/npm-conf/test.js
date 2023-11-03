@@ -1,5 +1,5 @@
 // load `npmDefaults` first and clone them into a new object as `npmCore` mutates them
-const npmDefaults = Object.assign({}, require('../node_modules/npm/lib/config/defaults').defaults);
+const npmDefaults = Object.assign({}, require('npm/lib/config/defaults').defaults);
 const npmCore = require('npm/lib/config/core');
 const { promisify } = require('util');
 const m = require('../dist');
@@ -16,7 +16,6 @@ test('mirror npm config', async () => {
 	expect(conf.get('prefix')).toBe(npmConf.get('prefix'));
 	expect(conf.get('registry')).toBe(npmConf.get('registry'));
 	expect(conf.get('tmp')).toBe(npmConf.get('tmp'));
-
 	// loop each config key and compare
 	const ignoreList = ['cafile', 'node-version', 'onload-script']
 	for (const key in npmDefaults) {

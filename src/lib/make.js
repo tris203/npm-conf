@@ -43,8 +43,8 @@ const unicode = /UTF-?8$/i.test(
   process.env.LANG || ''
 )
 
-export let defaults: any
-let globalPrefix
+et defaults: Record<string, any> ;
+let globalPrefix;
 
 Object.defineProperty(exports, 'defaults', {
   get: function () {
@@ -71,7 +71,7 @@ Object.defineProperty(exports, 'defaults', {
 
 		}
 		return defaults
-	  },
+	  }
 	})
 	
 		`;
